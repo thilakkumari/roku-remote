@@ -7,6 +7,7 @@ on:
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  JAVA_HOME: /usr/lib/jvm/temurin-17-jdk-amd64
 
 permissions:
   contents: write
@@ -30,12 +31,17 @@ jobs:
           git config --global user.name "GitHub Actions"
           git config --global url."https://".insteadOf git://
 
+      - name: Set Java 17
+        run: |
+          echo "JAVA_HOME=/usr/lib/jvm/temurin-17-jdk-amd64" >> $GITHUB_ENV
+          echo "/usr/lib/jvm/temurin-17-jdk-amd64/bin" >> $GITHUB_PATH
+          java -version
+
       - name: Install system dependencies
         run: |
           sudo apt-get update -y
           sudo apt-get install -y \
             git zip unzip \
-            openjdk-17-jdk \
             python3-pip \
             build-essential \
             autoconf automake libtool pkg-config cmake \
@@ -43,8 +49,6 @@ jobs:
 
       - name: Accept Android SDK licenses
         run: |
-          mkdir -p $HOME/.android
-          touch $HOME/.android/repositories.cfg
           yes | /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --licenses || true
 
       - name: Install Python dependencies
