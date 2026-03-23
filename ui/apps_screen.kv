@@ -1,0 +1,68 @@
+#:kivy 2.2
+
+<AppsScreen>:
+    canvas.before:
+        Color:
+            rgba: 0.05, 0.05, 0.1, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        orientation: "vertical"
+        padding: "14dp"
+        spacing: "10dp"
+
+        # ── Header ────────────────────────────────────────────────────────
+        BoxLayout:
+            size_hint_y: None
+            height: "48dp"
+            spacing: "8dp"
+
+            Button:
+                text: "< REMOTE"
+                font_size: "12sp"
+                bold: True
+                size_hint_x: 0.32
+                background_normal: ''
+                background_down: ''
+                background_color: 0.08, 0.08, 0.16, 1
+                color: 0.45, 0.55, 0.85, 1
+                on_press: root.go_back()
+
+            Label:
+                text: "Installed Apps"
+                font_size: "18sp"
+                bold: True
+                color: 0.55, 0.38, 0.95, 1
+
+            Button:
+                text: "Refresh"
+                font_size: "12sp"
+                bold: True
+                size_hint_x: 0.28
+                background_normal: ''
+                background_down: ''
+                background_color: 0.42, 0.28, 0.88, 1
+                color: 1, 1, 1, 1
+                on_press: root.on_enter()
+
+        # ── App grid ──────────────────────────────────────────────────────
+        ScrollView:
+            GridLayout:
+                id: apps_grid
+                cols: 2
+                spacing: "8dp"
+                padding: "2dp"
+                size_hint_y: None
+                height: self.minimum_height
+
+        # ── Status ────────────────────────────────────────────────────────
+        Label:
+            id: status_label
+            text: ""
+            font_size: "12sp"
+            size_hint_y: None
+            height: "28dp"
+            color: 0.42, 0.28, 0.88, 0.9
+            halign: "center"

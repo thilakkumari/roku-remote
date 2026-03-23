@@ -1,0 +1,4 @@
+kivy>=2.2.0
+requests>=2.31.0
+certifi
+pytest>=7.0.0

@@ -1,0 +1,290 @@
+
+#:kivy 2.2
+
+# ── Reusable styled widgets ──────────────────────────────────────────────────
+
+<FlatButton@Button>:
+    background_normal: ''
+    background_down: ''
+    bold: True
+    color: 0.92, 0.92, 0.96, 1
+
+<SectionLabel@Label>:
+    font_size: "9sp"
+    bold: True
+    color: 0.35, 0.35, 0.48, 1
+    size_hint_y: None
+    height: "16dp"
+    halign: "left"
+    valign: "middle"
+    text_size: self.width, self.height
+
+# ── Main remote screen ───────────────────────────────────────────────────────
+
+<RemoteScreen>:
+    # Dark navy app background
+    canvas.before:
+        Color:
+            rgba: 0.05, 0.05, 0.1, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    ScrollView:
+        BoxLayout:
+            orientation: "vertical"
+            padding: "14dp", "14dp", "14dp", "8dp"
+            spacing: "8dp"
+            size_hint_y: None
+            height: self.minimum_height
+
+            # ── Header bar ────────────────────────────────────────────────
+            BoxLayout:
+                size_hint_y: None
+                height: "48dp"
+                spacing: "8dp"
+
+                FlatButton:
+                    text: "< DEVICES"
+                    font_size: "12sp"
+                    size_hint_x: 0.32
+                    background_color: 0.08, 0.08, 0.16, 1
+                    color: 0.45, 0.55, 0.85, 1
+                    on_press: root.go_to_discovery()
+
+                Label:
+                    text: "Roku Remote"
+                    font_size: "18sp"
+                    bold: True
+                    color: 0.55, 0.38, 0.95, 1
+
+                FlatButton:
+                    text: "APPS >"
+                    font_size: "12sp"
+                    size_hint_x: 0.32
+                    background_color: 0.42, 0.28, 0.88, 1
+                    color: 1, 1, 1, 1
+                    on_press: root.go_to_apps()
+
+            # ── System buttons ────────────────────────────────────────────
+            SectionLabel:
+                text: "  SYSTEM"
+
+            BoxLayout:
+                size_hint_y: None
+                height: "54dp"
+                spacing: "8dp"
+                canvas.before:
+                    Color:
+                        rgba: 0.08, 0.08, 0.15, 1
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [10]
+
+                FlatButton:
+                    text: "HOME"
+                    font_size: "14sp"
+                    background_color: 0, 0, 0, 0
+                    color: 0.3, 0.65, 1, 1
+                    on_press: root.press_key("Home")
+
+                # Thin divider
+                BoxLayout:
+                    size_hint_x: None
+                    width: "1dp"
+                    canvas.before:
+                        Color:
+                            rgba: 0.2, 0.2, 0.3, 1
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+
+                FlatButton:
+                    text: "BACK"
+                    font_size: "14sp"
+                    background_color: 0, 0, 0, 0
+                    color: 0.65, 0.65, 0.75, 1
+                    on_press: root.press_key("Back")
+
+                BoxLayout:
+                    size_hint_x: None
+                    width: "1dp"
+                    canvas.before:
+                        Color:
+                            rgba: 0.2, 0.2, 0.3, 1
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+
+                FlatButton:
+                    text: "POWER"
+                    font_size: "14sp"
+                    background_color: 0, 0, 0, 0
+                    color: 0.95, 0.3, 0.3, 1
+                    on_press: root.press_key("PowerOff")
+
+            # ── D-Pad ─────────────────────────────────────────────────────
+            SectionLabel:
+                text: "  NAVIGATION"
+
+            BoxLayout:
+                size_hint_y: None
+                height: "230dp"
+                canvas.before:
+                    Color:
+                        rgba: 0.08, 0.08, 0.15, 1
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [10]
+
+                # Side padding
+                Widget:
+                    size_hint_x: 0.08
+
+                GridLayout:
+                    cols: 3
+                    rows: 3
+                    spacing: "6dp"
+                    padding: "10dp"
+
+                    # Row 1 — UP
+                    Widget:
+
+                    ArrowButton:
+                        text: ""
+                        direction: "up"
+                        on_press: root.press_key("Up")
+
+                    Widget:
+
+                    # Row 2 — LEFT / OK / RIGHT
+                    ArrowButton:
+                        text: ""
+                        direction: "left"
+                        on_press: root.press_key("Left")
+
+                    FlatButton:
+                        text: "OK"
+                        font_size: "22sp"
+                        background_color: 0.42, 0.28, 0.88, 1
+                        color: 1, 1, 1, 1
+                        on_press: root.press_key("Select")
+
+                    ArrowButton:
+                        text: ""
+                        direction: "right"
+                        on_press: root.press_key("Right")
+
+                    # Row 3 — DOWN
+                    Widget:
+
+                    ArrowButton:
+                        text: ""
+                        direction: "down"
+                        on_press: root.press_key("Down")
+
+                    Widget:
+
+                # Side padding
+                Widget:
+                    size_hint_x: 0.08
+
+            # ── Media controls ────────────────────────────────────────────
+            SectionLabel:
+                text: "  MEDIA"
+
+            GridLayout:
+                cols: 3
+                spacing: "8dp"
+                size_hint_y: None
+                height: "68dp"
+
+                FlatButton:
+                    text: "|<< Rewind"
+                    font_size: "13sp"
+                    background_color: 0.1, 0.1, 0.2, 1
+                    color: 0.7, 0.7, 0.85, 1
+                    on_press: root.press_key("Rev")
+
+                FlatButton:
+                    text: "Play / Pause"
+                    font_size: "13sp"
+                    background_color: 0.08, 0.48, 0.34, 1
+                    color: 0.8, 1, 0.9, 1
+                    on_press: root.press_key("Play")
+
+                FlatButton:
+                    text: "Forward >>|"
+                    font_size: "13sp"
+                    background_color: 0.1, 0.1, 0.2, 1
+                    color: 0.7, 0.7, 0.85, 1
+                    on_press: root.press_key("Fwd")
+
+            # ── Volume controls ───────────────────────────────────────────
+            SectionLabel:
+                text: "  VOLUME"
+
+            BoxLayout:
+                size_hint_y: None
+                height: "60dp"
+                spacing: "8dp"
+                canvas.before:
+                    Color:
+                        rgba: 0.08, 0.08, 0.15, 1
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [10]
+
+                FlatButton:
+                    text: "VOL -"
+                    font_size: "15sp"
+                    background_color: 0, 0, 0, 0
+                    color: 0.75, 0.75, 0.9, 1
+                    on_press: root.press_key("VolumeDown")
+
+                BoxLayout:
+                    size_hint_x: None
+                    width: "1dp"
+                    canvas.before:
+                        Color:
+                            rgba: 0.2, 0.2, 0.3, 1
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+
+                FlatButton:
+                    text: "MUTE"
+                    font_size: "15sp"
+                    background_color: 0, 0, 0, 0
+                    color: 1, 0.82, 0.25, 1
+                    on_press: root.press_key("VolumeMute")
+
+                BoxLayout:
+                    size_hint_x: None
+                    width: "1dp"
+                    canvas.before:
+                        Color:
+                            rgba: 0.2, 0.2, 0.3, 1
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+
+                FlatButton:
+                    text: "VOL +"
+                    font_size: "15sp"
+                    background_color: 0, 0, 0, 0
+                    color: 0.75, 0.75, 0.9, 1
+                    on_press: root.press_key("VolumeUp")
+
+            # ── Status bar ────────────────────────────────────────────────
+            Label:
+                id: status_label
+                text: "Ready"
+                font_size: "12sp"
+                size_hint_y: None
+                height: "26dp"
+                color: 0.42, 0.28, 0.88, 0.9
+                halign: "center"
