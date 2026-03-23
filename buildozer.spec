@@ -8,6 +8,7 @@ package.domain = com.yourname.rokuremote
 # Entry point
 source.dir = .
 source.include_exts = py,kv,png,jpg,atlas
+source.exclude_dirs = venv, .buildozer, .git, .github, tests, __pycache__
 source.main = main.py
 
 version = 1.0
