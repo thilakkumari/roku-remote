@@ -41,14 +41,19 @@ jobs:
             autoconf automake libtool pkg-config cmake \
             libffi-dev libssl-dev zlib1g-dev libltdl-dev
 
+      - name: Accept Android SDK licenses
+        run: |
+          mkdir -p $HOME/.android
+          touch $HOME/.android/repositories.cfg
+          yes | /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --licenses || true
+
       - name: Install Python dependencies
         run: |
           pip install --upgrade pip
-          pip install cython buildozer virtualenv
+          pip install cython==0.29.37 buildozer virtualenv
 
       - name: Build APK
-        run: |
-          yes | buildozer android debug
+        run: buildozer android debug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4

@@ -14,7 +14,7 @@ version = 1.0
 
 # Python packages required by the app
 # List every package your code imports — missing entries = ModuleNotFoundError on device
-requirements = python3,kivy,requests,certifi,charset-normalizer,idna,urllib3,pyjnius
+requirements = python3,kivy,requests,certifi,charset-normalizer,idna,urllib3
 
 # Android permissions
 # CHANGE_WIFI_MULTICAST_STATE is required for SSDP device discovery
