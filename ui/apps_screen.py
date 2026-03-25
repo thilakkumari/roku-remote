@@ -8,6 +8,7 @@ from kivy.uix.image import AsyncImage
 from kivy.uix.label import Label
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.screenmanager import Screen
+from roku import usage
 
 
 class AppCard(ButtonBehavior, BoxLayout):
@@ -81,17 +82,20 @@ class AppsScreen(Screen):
         base_url = client.device.base_url if client else ""
 
         self.ids.status_label.text = f"{len(apps)} apps installed"
-        for app in sorted(apps, key=lambda a: a.name.lower()):
+        counts = usage.load()
+        for app in sorted(apps, key=lambda a: (-counts.get(a.app_id, 0), a.name.lower())):
             card = AppCard(app=app, base_url=base_url, launch_cb=self._launch)
             self.ids.apps_grid.add_widget(card)
 
     def _launch(self, app):
         self.ids.status_label.text = f"Launching {app.name}..."
+        usage.increment(app.app_id)
         client = App.get_running_app().roku_client
         threading.Thread(
             target=lambda: client.launch_app(app.app_id),
             daemon=True
         ).start()
+        self.manager.current = "remote"
 
     def go_back(self):
         self.manager.current = "remote"
