@@ -95,6 +95,9 @@ class AppsScreen(Screen):
             target=lambda: client.launch_app(app.app_id),
             daemon=True
         ).start()
+        # Reset search history so the new app starts with a clean search field
+        search_screen = self.manager.get_screen("search")
+        search_screen._last_sent = ""
         self.manager.current = "remote"
 
     def go_back(self):

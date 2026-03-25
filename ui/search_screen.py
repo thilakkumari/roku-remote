@@ -33,6 +33,7 @@ class SearchScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._sending = False
+        self._last_sent = ""  # tracks text from previous send in this session
 
     # ── Lifecycle ─────────────────────────────────────────────────────────────
 
@@ -93,6 +94,11 @@ class SearchScreen(Screen):
         self.ids.search_input.text = ""
         self._set_status("Cleared.")
 
+    def do_clear_history(self):
+        search_history.clear()
+        self._load_history()
+        self._set_status("History cleared.")
+
     def go_back(self):
         self.manager.current = "remote"
 
@@ -103,16 +109,16 @@ class SearchScreen(Screen):
         if client is None:
             Clock.schedule_once(lambda dt: self._finish_send(False, "Not connected to a Roku."))
             return
-        # Clear any existing text in the Roku search box first
-        for _ in range(50):
-            client.keypress("Backspace")
-        time.sleep(0.15)  # ensure all backspaces arrive before typing begins
+        # Second search onwards: clear previous text + a buffer for any TV autocomplete chars
+        if self._last_sent:
+            for _ in range(len(self._last_sent) + 20):
+                client.keypress("Backspace")
 
         ok = client.send_text(text)
         if ok:
-            client.keypress("Enter")
+            self._last_sent = text
             search_history.add(text)
-        msg = f"Sent '{text}'" if ok else "Send failed — check WiFi and try again."
+        msg = f"Done — press OK on remote to search" if ok else "Send failed — check WiFi and try again."
         Clock.schedule_once(lambda dt: self._finish_send(ok, msg))
 
     def _finish_send(self, ok: bool, msg: str):

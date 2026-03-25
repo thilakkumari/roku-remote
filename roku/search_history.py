@@ -18,6 +18,14 @@ def load() -> list:
         return []
 
 
+def clear() -> None:
+    """Remove all search history."""
+    try:
+        os.remove(_path())
+    except Exception:
+        pass
+
+
 def add(text: str) -> None:
     """Add a search term, remove duplicates, keep newest MAX_HISTORY entries."""
     history = load()
