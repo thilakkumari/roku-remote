@@ -1,8 +1,11 @@
 import threading
+import time
 
 from kivy.app import App
 from kivy.clock import Clock
+from kivy.uix.button import Button
 from kivy.uix.screenmanager import Screen
+from roku import search_history
 
 # ── Android speech recognizer (graceful desktop fallback) ─────────────────────
 try:
@@ -27,12 +30,17 @@ class SearchScreen(Screen):
     character-by-character using Lit_ ECP keypresses.
     """
 
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self._sending = False
+
     # ── Lifecycle ─────────────────────────────────────────────────────────────
 
     def on_enter(self):
         self._set_status("Type or speak your search, then tap Send.")
         self.ids.search_input.focus = True
         self.ids.mic_button.disabled = not _SPEECH_AVAILABLE
+        self._load_history()
         if _SPEECH_AVAILABLE:
             activity_bind(on_activity_result=self._on_speech_result)
             try:
@@ -51,14 +59,16 @@ class SearchScreen(Screen):
     # ── Button callbacks ──────────────────────────────────────────────────────
 
     def do_send(self):
-        if self.ids.send_button.disabled:
-            return  # already sending, ignore duplicate triggers
+        if self._sending:
+            return
         text = self.ids.search_input.text.strip()
         if not text:
             self._set_status("Nothing to send — type something first.")
             return
-        self._set_status(f"Sending '{text}'…")
+        self._sending = True
+        self.ids.search_input.text = ""  # clear immediately to block any duplicate trigger
         self.ids.send_button.disabled = True
+        self._set_status(f"Sending '{text}'…")
         threading.Thread(target=self._send_worker, args=(text,), daemon=True).start()
 
     def do_mic(self):
@@ -96,14 +106,17 @@ class SearchScreen(Screen):
         # Clear any existing text in the Roku search box first
         for _ in range(50):
             client.keypress("Backspace")
+        time.sleep(0.15)  # ensure all backspaces arrive before typing begins
 
         ok = client.send_text(text)
         if ok:
             client.keypress("Enter")
+            search_history.add(text)
         msg = f"Sent '{text}'" if ok else "Send failed — check WiFi and try again."
         Clock.schedule_once(lambda dt: self._finish_send(ok, msg))
 
     def _finish_send(self, ok: bool, msg: str):
+        self._sending = False
         self.ids.send_button.disabled = False
         self._set_status(msg)
 
@@ -131,6 +144,31 @@ class SearchScreen(Screen):
         self._set_status(f"Heard: '{text}' — tap Send to type it on your TV.")
 
     # ── Helpers ───────────────────────────────────────────────────────────────
+
+    def _load_history(self):
+        self.ids.history_list.clear_widgets()
+        for term in search_history.load():
+            btn = Button(
+                text=term,
+                size_hint_y=None,
+                height="44dp",
+                font_size="14sp",
+                bold=False,
+                background_normal='',
+                background_down='',
+                background_color=(0.1, 0.1, 0.2, 1),
+                color=(0.75, 0.75, 0.9, 1),
+                halign="left",
+            )
+            btn.bind(
+                size=lambda w, s: setattr(w, "text_size", (s[0] - 24, s[1])),
+                on_press=lambda _, t=term: self._fill_history(t),
+            )
+            self.ids.history_list.add_widget(btn)
+
+    def _fill_history(self, text: str):
+        self.ids.search_input.text = text
+        self._set_status(f"Tap Send to search for '{text}'")
 
     def _set_status(self, msg: str):
         self.ids.status_label.text = msg

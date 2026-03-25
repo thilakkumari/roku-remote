@@ -7,20 +7,26 @@ from kivy.uix.screenmanager import Screen
 
 from roku.discovery import discover_rokus
 from roku.client import RokuClient
+from roku import saved_device
 
 
 class DiscoveryScreen(Screen):
     """
     First screen shown at app launch.
-    Scans the local WiFi network for Roku devices via SSDP,
-    then lets the user select one to control.
+    Auto-connects to the saved device if one exists,
+    otherwise scans the local WiFi network via SSDP.
     """
 
     def on_enter(self):
-        """Auto-start discovery when this screen becomes active."""
-        self.start_discovery()
+        device = saved_device.load()
+        if device:
+            self.ids.status_label.text = f"Connecting to {device.name}..."
+            Clock.schedule_once(lambda dt: self._select_device(device), 0)
+        else:
+            self.start_discovery()
 
     def start_discovery(self):
+        saved_device.clear()
         self.ids.status_label.text = "Searching for Roku devices..."
         self.ids.device_list.clear_widgets()
         # Network calls MUST run in a background thread — never block Kivy's UI thread
@@ -63,6 +69,7 @@ class DiscoveryScreen(Screen):
             self.ids.device_list.add_widget(btn)
 
     def _select_device(self, device):
+        saved_device.save(device)
         app = App.get_running_app()
         app.roku_client = RokuClient(device)
         self.manager.current = "remote"

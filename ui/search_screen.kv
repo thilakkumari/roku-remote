@@ -117,4 +117,20 @@
             valign: "middle"
             text_size: self.width, self.height
 
-        Widget:
+        # ── Search history ────────────────────────────────────────────────────
+        Label:
+            text: "── Recent ──"
+            font_size: "11sp"
+            size_hint_y: None
+            height: "20dp"
+            color: 0.35, 0.35, 0.5, 1
+            halign: "center"
+
+        ScrollView:
+            size_hint_y: 1
+            GridLayout:
+                id: history_list
+                cols: 1
+                spacing: "4dp"
+                size_hint_y: None
+                height: self.minimum_height
