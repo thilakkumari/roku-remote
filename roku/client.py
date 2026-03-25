@@ -1,3 +1,5 @@
+import time
+import urllib.parse
 import requests
 import xml.etree.ElementTree as ET
 from typing import List
@@ -22,6 +24,16 @@ class RokuClient:
             return r.status_code == 200
         except requests.RequestException:
             return False
+
+    def send_text(self, text: str, char_delay: float = 0.05) -> bool:
+        """Type a string on the Roku one character at a time via Lit_ keypresses."""
+        for char in text:
+            encoded = urllib.parse.quote(char, safe='')
+            if not self.keypress(f"Lit_{encoded}"):
+                return False
+            if char_delay > 0:
+                time.sleep(char_delay)
+        return True
 
     def get_apps(self) -> List[RokuApp]:
         """Return the list of all installed apps/channels."""

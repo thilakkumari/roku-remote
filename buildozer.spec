@@ -19,7 +19,7 @@ requirements = python3,kivy,requests,certifi,charset-normalizer,idna,urllib3
 
 # Android permissions
 # CHANGE_WIFI_MULTICAST_STATE is required for SSDP device discovery
-android.permissions = INTERNET,ACCESS_WIFI_STATE,ACCESS_NETWORK_STATE,CHANGE_WIFI_MULTICAST_STATE
+android.permissions = INTERNET,ACCESS_WIFI_STATE,ACCESS_NETWORK_STATE,CHANGE_WIFI_MULTICAST_STATE,RECORD_AUDIO
 
 # Android settings
 android.minapi = 21
@@ -33,8 +33,7 @@ android.archs = arm64-v8a
 orientation = portrait
 fullscreen = 0
 
-# Optional: app icon (uncomment and add icon.png to assets/ when ready)
-# icon.filename = assets/icon.png
+icon.filename = assets/icon.png
 
 
 [buildozer]

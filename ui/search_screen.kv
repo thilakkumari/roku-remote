@@ -1,0 +1,120 @@
+#:kivy 2.2
+
+<SearchScreen>:
+    canvas.before:
+        Color:
+            rgba: 0.05, 0.05, 0.1, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        orientation: "vertical"
+        padding: "14dp", "14dp", "14dp", "8dp"
+        spacing: "12dp"
+
+        # ── Header ────────────────────────────────────────────────────────────
+        BoxLayout:
+            size_hint_y: None
+            height: "48dp"
+            spacing: "8dp"
+
+            Button:
+                text: "< REMOTE"
+                font_size: "12sp"
+                bold: True
+                size_hint_x: 0.32
+                background_normal: ''
+                background_down: ''
+                background_color: 0.08, 0.08, 0.16, 1
+                color: 0.45, 0.55, 0.85, 1
+                on_press: root.go_back()
+
+            Label:
+                text: "Search"
+                font_size: "18sp"
+                bold: True
+                color: 0.55, 0.38, 0.95, 1
+
+            Widget:
+                size_hint_x: 0.32
+
+        # ── Hint label ────────────────────────────────────────────────────────
+        Label:
+            text: "Type text or tap Mic to speak, then tap Send."
+            font_size: "12sp"
+            size_hint_y: None
+            height: "22dp"
+            color: 0.35, 0.35, 0.52, 1
+            halign: "left"
+            valign: "middle"
+            text_size: self.width, self.height
+
+        # ── Text input ────────────────────────────────────────────────────────
+        TextInput:
+            id: search_input
+            hint_text: "What do you want to search for?"
+            font_size: "16sp"
+            size_hint_y: None
+            height: "56dp"
+            multiline: False
+            background_color: 0.1, 0.1, 0.2, 1
+            foreground_color: 0.92, 0.92, 0.96, 1
+            hint_text_color: 0.35, 0.35, 0.5, 1
+            cursor_color: 0.42, 0.28, 0.88, 1
+            padding: "12dp", "14dp"
+
+        # ── Action buttons ────────────────────────────────────────────────────
+        BoxLayout:
+            size_hint_y: None
+            height: "58dp"
+            spacing: "8dp"
+
+            Button:
+                id: mic_button
+                text: "Mic"
+                font_size: "15sp"
+                bold: True
+                size_hint_x: 0.25
+                background_normal: ''
+                background_down: ''
+                background_color: 0.12, 0.42, 0.62, 1
+                color: 1, 1, 1, 1
+                on_press: root.do_mic()
+
+            Button:
+                text: "Clear"
+                font_size: "15sp"
+                bold: True
+                size_hint_x: 0.25
+                background_normal: ''
+                background_down: ''
+                background_color: 0.28, 0.14, 0.14, 1
+                color: 1, 0.75, 0.75, 1
+                on_press: root.do_clear()
+
+            Button:
+                id: send_button
+                text: "Send to TV"
+                font_size: "15sp"
+                bold: True
+                size_hint_x: 0.50
+                background_normal: ''
+                background_down: ''
+                background_color: 0.42, 0.28, 0.88, 1
+                color: 1, 1, 1, 1
+                on_press: root.do_send()
+
+        # ── Status label ──────────────────────────────────────────────────────
+        Label:
+            id: status_label
+            text: ""
+            font_size: "12sp"
+            size_hint_y: None
+            height: "40dp"
+            color: 0.42, 0.28, 0.88, 0.9
+            halign: "center"
+            valign: "middle"
+            text_size: self.width, self.height
+
+        Widget:

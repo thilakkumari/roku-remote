@@ -92,3 +92,6 @@ class RemoteScreen(Screen):
 
     def go_to_discovery(self):
         self.manager.current = "discovery"
+
+    def go_to_search(self):
+        self.manager.current = "search"
